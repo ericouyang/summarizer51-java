@@ -22,10 +22,24 @@ public class Graph<T> {
         return nodes.get(key);
     }
 
+    @SuppressWarnings("unchecked")
+    public void linkNodes() {
+        Node<T>[] n = nodes.values().toArray(new Node[nodes.size()]);
+        for (int i = 0; i < n.length; i++) {
+            Node<T> n1 = n[i];
+            for (int j = i + 1; j < n.length; j++) {
+                Node<T> n2 = n[j];
+                link(n1, n2);
+            }
+        }
+    }
+
     public void link(Node<T> n1, Node<T> n2) {
-        double weight = n1.calculateRelationScore(n2);
-        n1.addNeighbor(n2, weight);
-        n2.addNeighbor(n1, weight);
+        double relation = n1.calculateRelationScore(n2);
+        if (relation > 0.0) {
+            n1.addNeighbor(n2, relation);
+            n2.addNeighbor(n1, relation);
+        }
     }
 
     public Stream<Node<T>> getNodeStream() {

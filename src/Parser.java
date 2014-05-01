@@ -1,33 +1,33 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Parser {
+    private final static String SENTENCE_BOUNDARY = "(?<=(?<!\\..)[\\?\\!\\.]+)\\s(?!.\\.)|[\r\n]+";
+    private final static String WORD_BOUNDARY = "('s|(?<=s)')?(,\\W|[^\\w-',\\?\\!\\.]+|(?<!\\..)([\\?\\!\\.]+)(\\s(?!.\\.)|$)|[\r\n]+)";
+
     private String fullText;
 
-    // private final static String sentenceRegex = "[\\.!?] *";
-
-    // http://en.wikipedia.org/wiki/Sentence_boundary_disambiguation
-    private final static String sentenceRegex = "(?<!\\..)([\\?\\!\\.]+)\\s(?!.\\.)";
-
-    private final static String wordRegex = "[^\\w-]+";
-
     public Parser(String filename) throws IOException {
-        BufferedReader r = null;
+        try (BufferedReader r = new BufferedReader(new FileReader(filename))) {
+            StringBuffer strBuff = new StringBuffer();
 
-        r = new BufferedReader(new FileReader(filename));
+            char[] buf = new char[1024];
+            int read;
+            while ((read = r.read(buf, 0, buf.length)) >= 0) {
+                strBuff.append(buf, 0, read);
+            }
 
-        StringBuffer strBuff = new StringBuffer();
+            fullText = strBuff.toString();
 
-        char[] buff = new char[1024];
-
-        while (r.read(buff, 0, buff.length) >= 0) {
-            strBuff.append(new String(buff).replaceAll("\\r?\\n", " "));
+            if (Summarizer51.DEBUG) {
+                System.out.println("***TEXT***");
+                System.out.println(fullText);
+                System.out.println();
+            }
         }
-
-        fullText = strBuff.toString();
-
-        r.close();
     }
 
     public Sentence[] parseSentences() {
@@ -39,29 +39,27 @@ public class Parser {
     }
 
     public static Sentence[] parseSentences(String s) {
-        /*
-         * List<String> matches = new ArrayList<String>(); Matcher m =
-         * Pattern.compile(sentenceRegex).matcher(s); while (m.find()) { matches.add(m.group()); }
-         * 
-         * return matches.stream().map(match -> new Sentence(match)).toArray(Sentence[]::new);
-         */
-
-        String[] parsed = s.split(sentenceRegex);
-        Sentence[] sentences = new Sentence[parsed.length];
+        String[] parsed = s.split(SENTENCE_BOUNDARY);
+        List<Sentence> sentences = new LinkedList<>();
         for (int i = 0; i < parsed.length; i++) {
-            sentences[i] = new Sentence(parsed[i]);
+            String sentence = parsed[i].trim();
+            if (!sentence.isEmpty()) {
+                sentences.add(new Sentence(sentence));
+            }
         }
-        return sentences;
-
+        return sentences.toArray(new Sentence[sentences.size()]);
     }
 
     public static String[] parseWords(String s) {
-        String[] words = s.split(wordRegex);
-
-        for (int i = 0; i < words.length; i++) {
-            words[i] = words[i].toLowerCase();
+        String[] parsed = s.split(WORD_BOUNDARY);
+        List<String> words = new LinkedList<>();
+        for (int i = 0; i < parsed.length; i++) {
+            String word = parsed[i].trim().toLowerCase();
+            if (!word.isEmpty()) {
+                words.add(word);
+            }
         }
 
-        return words;
+        return words.toArray(new String[words.size()]);
     }
 }

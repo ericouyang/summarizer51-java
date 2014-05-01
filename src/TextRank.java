@@ -2,12 +2,26 @@ import java.util.List;
 
 public class TextRank implements KeywordExtractor, SummaryExtractor {
 
-    private static final int MAX_ITERATIONS = 50;
+    private static final int MAX_ITERATIONS = 30;
     private static final double DAMPING_FACTOR = 0.85;
     private static final double ERROR_THRESHOLD = 0.0001;
     private static final int SUMMARY_LENGTH = 5;
 
-    private int iterations;
+    private TextRank() {
+    }
+
+    public static KeywordExtractor initKeywordExtractor() {
+        return new TextRank();
+    }
+
+    public static SummaryExtractor initSummaryExtractor() {
+        return new TextRank();
+    }
+
+    @Override
+    public String[] getKeywords(String[] words) {
+        return null;
+    }
 
     @Override
     public Sentence[] getSummary(Sentence[] sentences) {
@@ -30,14 +44,13 @@ public class TextRank implements KeywordExtractor, SummaryExtractor {
             }
         }));
 
-        for (iterations = 0; iterations < MAX_ITERATIONS; iterations++) {
+        for (int i = 0; i < MAX_ITERATIONS; i++) {
+            // check if rank calculation has converged
             if (graph.getNodeStream().reduce(false, (a, n) -> a || n.calculateRank(),
                     Boolean::logicalOr)) {
                 break;
             }
         }
-
-        // System.out.println("Iterations: " + iterations);
     }
 
     private class SentenceNode extends Node<Sentence> {
@@ -72,7 +85,7 @@ public class TextRank implements KeywordExtractor, SummaryExtractor {
 
             long numCommonWords = thisWords.stream().filter(w -> otherWords.contains(w)).count();
 
-            return numCommonWords / (Math.log(thisWords.size()) + Math.log(otherWords.size()));
+            return numCommonWords / Math.log(thisWords.size() * otherWords.size());
         }
     }
 

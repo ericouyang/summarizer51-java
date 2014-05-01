@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * Summarizer51
@@ -14,8 +15,10 @@ import java.io.IOException;
  *
  */
 public class Summarizer51 {
-    public static void main(String[] args) {
-        String filename = "";
+    public static final boolean DEBUG = true;
+
+    public static void main(String[] args) throws IOException {
+        String filename = "texts/gilbert.txt";
 
         /*
          * if (args.length == 0) { Scanner s = new Scanner(System.in);
@@ -23,20 +26,24 @@ public class Summarizer51 {
          * = args[0]; }
          */
 
-        filename = "texts/gilbert.txt";
+        Parser p = new Parser(filename);
 
-        try {
-            Parser p = new Parser(filename);
-
-            // System.out.println(Arrays.toString(p.parseSentences()));
-            // System.out.println(Arrays.toString(p.parseWords()));
-
-            TextRank tr = new TextRank();
-            for (Sentence s : tr.getSummary(p.parseSentences())) {
-                System.out.println(s);
+        if (DEBUG) {
+            System.out.println("***SENTENCES***");
+            for (Sentence s : p.parseSentences()) {
+                System.out.println(s.getOriginal());
+                System.out.println(s.getWords());
+                System.out.println();
             }
-        } catch (IOException e) {
 
+            System.out.println("***WORDS***");
+            System.out.println(Arrays.toString(p.parseWords()));
+            System.out.println();
+        }
+
+        System.out.println("***SUMMARY***");
+        for (Sentence s : TextRank.initSummaryExtractor().getSummary(p.parseSentences())) {
+            System.out.println(s);
         }
 
     }
