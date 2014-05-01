@@ -1,18 +1,20 @@
+import java.util.Arrays;
+import java.util.List;
 
 public class Sentence {
     private final String original;
-    private final String[] words;
-    
+    private final List<String> words;
+
     public Sentence(String s) {
 	original = s;
-	words = Parser.parseWords(s);
+	words = Arrays.asList(Parser.parseWords(s));
     }
-    
+
     public String getOriginal() {
 	return original;
     }
-    
-    public String[] getWords() {
+
+    public List<String> getWords() {
 	return words;
     }
 }
