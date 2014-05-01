@@ -5,7 +5,7 @@ public class TextRank implements KeywordExtractor, SummaryExtractor {
     private static final int MAX_ITERATIONS = 50;
     private static final double DAMPING_FACTOR = 0.85;
     private static final double ERROR_THRESHOLD = 0.0001;
-    private static final int SUMMARY_LENGTH = 99;
+    private static final int SUMMARY_LENGTH = 5;
 
     private int iterations;
 
@@ -19,10 +19,8 @@ public class TextRank implements KeywordExtractor, SummaryExtractor {
 
         calculateRanks(graph);
 
-        return graph.getRankedNodes().limit(SUMMARY_LENGTH).map(n -> {
-            System.out.println(n);
-            return n.getContent();
-        }).toArray(Sentence[]::new);
+        return graph.getRankedNodes().limit(SUMMARY_LENGTH).map(n -> n.getContent())
+                .toArray(Sentence[]::new);
     }
 
     private <T> void calculateRanks(Graph<T> graph) {
@@ -38,6 +36,8 @@ public class TextRank implements KeywordExtractor, SummaryExtractor {
                 break;
             }
         }
+
+        // System.out.println("Iterations: " + iterations);
     }
 
     private class SentenceNode extends Node<Sentence> {

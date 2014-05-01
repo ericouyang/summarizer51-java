@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Summarizer51
@@ -29,8 +28,8 @@ public class Summarizer51 {
         try {
             Parser p = new Parser(filename);
 
-            System.out.println(Arrays.toString(p.parseSentences()));
-            System.out.println(Arrays.toString(p.parseWords()));
+            // System.out.println(Arrays.toString(p.parseSentences()));
+            // System.out.println(Arrays.toString(p.parseWords()));
 
             TextRank tr = new TextRank();
             for (Sentence s : tr.getSummary(p.parseSentences())) {
