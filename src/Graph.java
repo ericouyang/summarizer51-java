@@ -14,12 +14,12 @@ public class Graph<T> {
 	nodes = new HashMap<T, Node<T>>(capacity);
     }
 
-    public void add(T Tey, Node<T> value) {
-	nodes.put(Tey, value);
+    public void add(T key, Node<T> value) {
+	nodes.put(key, value);
     }
 
-    public Node<T> get(String Tey) {
-	return nodes.get(Tey);
+    public Node<T> get(String key) {
+	return nodes.get(key);
     }
 
     public void link(T k1, T k2, float weight) {
