@@ -1,9 +1,9 @@
 
-public class Edge {
+public class Edge<T> {
     private float weight;
-    private Node target;
+    private Node<T> target;
     
-    public Edge (Node t, float w) {
+    public Edge (Node<T> t, float w) {
 	target = t;
 	weight = w;
     }
@@ -12,7 +12,7 @@ public class Edge {
 	return weight;
     }
     
-    public Node getTarget() {
+    public Node<T> getTarget() {
 	return target;
     }
 }

@@ -1,36 +1,40 @@
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
-public class Graph {
-    private Map<String, Node> nodes;
+public class Graph<K, V> {
+    private Map<K, Node<V>> nodes;
     
     public Graph() {
-	nodes = new HashMap<String, Node>();
+	nodes = new HashMap<K, Node<V>>();
     }
     
     public Graph(int capacity) {
-	nodes = new HashMap<String, Node>(capacity);
+	nodes = new HashMap<K, Node<V>>(capacity);
     }
     
-    public void add(String key, Node value) {
+    public void add(K key, Node<V> value) {
 	nodes.put(key, value);
     }
     
-    public Node get(String key) {
+    public Node<V> get(String key) {
 	return nodes.get(key);
     }
     
-    public void link(String k1, String k2, float weight) {
-	Node n1 = nodes.get(k1);
-	Node n2 = nodes.get(k2);
+    public void link(K k1, K k2, float weight) {
+	Node<V> n1 = nodes.get(k1);
+	Node<V> n2 = nodes.get(k2);
 	
 	n1.addNeighbor(n2, weight);
 	n2.addNeighbor(n1, weight);
     }
     
-    public Iterator<Entry<String, Node>> getIterator() {
-	return nodes.entrySet().iterator();
+    public Stream<Node<V>> getNodeStream() {
+	return nodes.values().stream();
+    }
+    
+    public void forEach(BiConsumer<K, Node<V>> action) {
+	nodes.forEach(action);
     }
 }
