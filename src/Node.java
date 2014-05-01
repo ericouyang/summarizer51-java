@@ -1,15 +1,15 @@
 import java.util.List;
 
 public abstract class Node<T> {
-    private List<Edge<T>> neighbors;
-    private T content;
+    protected List<Edge<T>> neighbors;
+    protected final T content;
+    
+    public Node(T c) {
+	content = c;
+    }
     
     public T getContent() {
 	return content;
-    }
-    
-    public void setContent(T c) {
-	content = c;
     }
     
     public void addNeighbor(Node<T> n, float weight) {
