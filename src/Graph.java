@@ -22,9 +22,9 @@ public class Graph<T> {
 	return nodes.get(Tey);
     }
 
-    public void linT(T T1, T T2, float weight) {
-	Node<T> n1 = nodes.get(T1);
-	Node<T> n2 = nodes.get(T2);
+    public void link(T k1, T k2, float weight) {
+	Node<T> n1 = nodes.get(k1);
+	Node<T> n2 = nodes.get(k2);
 
 	n1.addNeighbor(n2, weight);
 	n2.addNeighbor(n1, weight);
