@@ -29,6 +29,7 @@ public class Summarizer51 {
     private static Sentence[] parsedSentences;
     private static Word[] taggedWords;
 
+    private static Scanner s;
     private static Parser p;
     private static Sentence[] summary;
     private static String[] keywords;
@@ -84,21 +85,27 @@ public class Summarizer51 {
 	    }
 
 	}
-	if (filename == null) {
-	    Scanner s = new Scanner(System.in);
-	    System.out.print("\nPlease enter a filename: ");
-	    filename = s.nextLine();
 
-	    s.close();
+	s = new Scanner(System.in);
+
+	for (;;) {
+	    try {
+		if (filename == null) {
+
+		    System.out.print("\nPlease enter a filename: ");
+		    filename = s.nextLine();
+		}
+		p = new Parser(filename);
+
+		break;
+	    } catch (IOException e) {
+		System.err
+			.println("\nThere was an error opening up the provided file. Please verify your filename and try again.");
+		filename = null;
+	    }
 	}
 
-	try {
-	    p = new Parser(filename);
-	} catch (IOException e) {
-	    System.err
-		    .println("\nThere was an error opening up the provided file. Please verify your filename and try again.");
-	    System.exit(4);
-	}
+	s.close();
 
 	System.out.println("\nParsing Sentences...");
 	parsedSentences = p.getParsedSentences();
