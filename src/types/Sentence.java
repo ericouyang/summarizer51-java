@@ -1,5 +1,8 @@
+package types;
 import java.util.Arrays;
 import java.util.List;
+
+import util.Parser;
 
 public class Sentence {
     private final String original;
