@@ -40,7 +40,7 @@ public class Summarizer51 {
 	TEXTRANK, LEXRANK
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 	System.out.println("Welcome to Summarizer51!");
 
 	for (int i = 0; i < args.length; i++) {
@@ -92,7 +92,13 @@ public class Summarizer51 {
 	    s.close();
 	}
 
-	p = new Parser(filename);
+	try {
+	    p = new Parser(filename);
+	} catch (IOException e) {
+	    System.err
+		    .println("\nThere was an error opening up the provided file. Please verify your filename and try again.");
+	    System.exit(4);
+	}
 
 	System.out.println("\nParsing Sentences...");
 	parsedSentences = p.getParsedSentences();

@@ -22,6 +22,16 @@ public class Parser {
     private String[] words = null;
     private Word[] taggedWords = null;
 
+    /**
+     * Constructs a new Parser
+     * 
+     * @param filename
+     *            the name of file to parse
+     * @param debug
+     *            true to run in debug mode
+     * @throws IOException
+     *             error reading the given file
+     */
     public Parser(String filename, boolean debug) throws IOException {
         debugMode = debug;
 
@@ -67,10 +77,22 @@ public class Parser {
         }
     }
 
+    /**
+     * Constructs a new Parser with debug mode turned off
+     * 
+     * @param filename
+     *            the name of file to parse
+     * @throws IOException
+     *             error reading the given file
+     */
     public Parser(String filename) throws IOException {
         this(filename, false);
     }
 
+    /**
+     * @return the parsed sentences as an array of Sentences
+     * @see Sentence
+     */
     public Sentence[] getParsedSentences() {
         if (sentences == null) {
             sentences = Parser.parseSentences(fullText);
@@ -78,6 +100,9 @@ public class Parser {
         return sentences;
     }
 
+    /**
+     * @return the words within the text as an array of Strings
+     */
     public String[] getParsedWords() {
         if (words == null) {
             words = Parser.parseWords(fullText);
@@ -85,6 +110,10 @@ public class Parser {
         return words;
     }
 
+    /**
+     * @return the words within the text as an array of Words (tagged with part
+     *         of speech)
+     */
     public Word[] getTaggedWords() {
         if (taggedWords == null) {
             taggedWords = Parser.tagWords(getParsedWords());
@@ -92,6 +121,13 @@ public class Parser {
         return taggedWords;
     }
 
+    /**
+     * Parse a given string into Sentences
+     * 
+     * @param s
+     *            the string to parse
+     * @return the parsed sentences as an array of Sentences
+     */
     public static Sentence[] parseSentences(String s) {
         String[] parsed = s.split(SENTENCE_BOUNDARY);
         List<Sentence> sentences = new LinkedList<>();
@@ -104,6 +140,13 @@ public class Parser {
         return sentences.toArray(new Sentence[sentences.size()]);
     }
 
+    /**
+     * Parse a given string into words
+     * 
+     * @param s
+     *            the string to parse
+     * @return the words within the text as an array of Strings
+     */
     public static String[] parseWords(String s) {
         String[] parsed = s.split(WORD_BOUNDARY);
         List<String> words = new LinkedList<>();
@@ -117,6 +160,13 @@ public class Parser {
         return words.toArray(new String[words.size()]);
     }
 
+    /**
+     * Tags the given words into Words (tagged with part of speech)
+     * 
+     * @param words
+     *            array of strings to parse
+     * @return Array of Words (tagged with part of speech)
+     */
     public static Word[] tagWords(String[] words) {
         Tagger t = new Tagger();
         return t.tag(words);
