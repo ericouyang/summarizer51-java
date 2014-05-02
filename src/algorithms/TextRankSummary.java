@@ -7,16 +7,14 @@ import types.Sentence;
 
 public class TextRankSummary extends TextRank implements SummaryExtractor {
 
-    private static final int DEFAULT_SUMMARY_LENGTH = 5;
-
     private final Sentence[] sentences;
     private final Graph<Sentence> sentenceGraph;
     private final int summaryLength;
 
-    public TextRankSummary(Sentence[] s) {
+    public TextRankSummary(Sentence[] s, int l) {
 	sentences = s;
 	sentenceGraph = new Graph<Sentence>();
-	summaryLength = DEFAULT_SUMMARY_LENGTH;
+	summaryLength = l;
     }
 
     @Override

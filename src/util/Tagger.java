@@ -22,7 +22,7 @@ public class Tagger {
 	dict = new HashMap<>(LEXICON_SIZE);
 
 	try (BufferedReader r = new BufferedReader(new FileReader(
-		"resources/lexicon.txt"))) {
+		"../resources/lexicon.txt"))) {
 
 	    String line = r.readLine();
 	    while (line != null) {
@@ -40,6 +40,7 @@ public class Tagger {
 	    r.close();
 	} catch (IOException e) {
 	    System.err.println("Unable to initilize tagger.");
+	    System.exit(10);
 	}
     }
 

@@ -1,6 +1,7 @@
 package algorithms;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,16 +11,15 @@ import types.Graph;
 import types.Word;
 
 public class TextRankKeywords extends TextRank implements KeywordExtractor {
-    private static final int DEFAULT_NUM_KEYWORDS = 10;
 
     private final Word[] words;
     private final Graph<Word> wordGraph;
     private final int numKeywords;
 
-    public TextRankKeywords(Word[] w) {
+    public TextRankKeywords(Word[] w, int n) {
 	words = w;
 	wordGraph = new Graph<Word>();
-	numKeywords = DEFAULT_NUM_KEYWORDS;
+	numKeywords = n;
     }
 
     @Override
@@ -37,7 +37,8 @@ public class TextRankKeywords extends TextRank implements KeywordExtractor {
 
 	calculateRanks(wordGraph);
 
-	return combineNodes(wordGraph.getRankedNodes().limit(numKeywords));
+	return Arrays.copyOfRange(combineNodes(wordGraph.getRankedNodes()
+		.limit(numKeywords * 2)), 0, numKeywords);
     }
 
     private String[] combineNodes(Stream<Graph<Word>.Node> words) {
