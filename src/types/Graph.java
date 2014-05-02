@@ -22,7 +22,7 @@ public class Graph<T> {
 	return nodes.put(key, value);
     }
 
-    public Node get(String key) {
+    public Node get(T key) {
 	return nodes.get(key);
     }
 

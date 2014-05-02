@@ -35,24 +35,25 @@ public class Summarizer51 {
 
 	if (DEBUG) {
 	    System.out.println("***SENTENCES***");
-	    for (Sentence s : p.parseSentences()) {
+	    for (Sentence s : p.getParsedSentences()) {
 		System.out.println(s.getOriginal());
 		System.out.println(s.getWords());
 		System.out.println();
 	    }
 
 	    System.out.println("***WORDS***");
-	    System.out.println(Arrays.toString(p.parseWords()));
+	    System.out.println(Arrays.toString(p.getParsedWords()));
 	    System.out.println();
 	}
 
 	System.out.println("***KEYWORDS***");
-	for (String s : new TextRankKeywords(p.parseWords()).getKeywords()) {
+	for (String s : new TextRankKeywords(p.getTaggedWords()).getKeywords()) {
 	    System.out.println(s);
 	}
 
 	System.out.println("\n***SUMMARY***");
-	for (Sentence s : new TextRankSummary(p.parseSentences()).getSummary()) {
+	for (Sentence s : new TextRankSummary(p.getParsedSentences())
+		.getSummary()) {
 	    System.out.println(s);
 	}
 

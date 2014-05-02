@@ -4,43 +4,46 @@ import java.util.HashSet;
 import java.util.Set;
 
 import types.Graph;
+import types.Word;
 
 public class TextRankKeywords extends TextRank implements KeywordExtractor {
     private static final int DEFAULT_NUM_KEYWORDS = 10;
 
-    private final String[] words;
-    private final Graph<String> wordGraph;
+    private final Word[] words;
+    private final Graph<Word> wordGraph;
     private final int numKeywords;
 
-    public TextRankKeywords(String[] w) {
+    public TextRankKeywords(Word[] w) {
 	words = w;
-	wordGraph = new Graph<String>();
+	wordGraph = new Graph<Word>();
 	numKeywords = DEFAULT_NUM_KEYWORDS;
     }
 
     @Override
     public String[] getKeywords() {
 	for (int i = 0; i < words.length; i++) {
-	    String w = words[i];
-	    WordNode n = (WordNode) wordGraph.get(w);
-	    if (n == null)
-		wordGraph.add(words[i], new WordNode(words[i], i));
-	    else
-		n.addIndex(i);
+	    Word w = words[i];
+	    if (w.getTag().equals("JJ") || w.getTag().charAt(0) == 'N') {
+		WordNode n = (WordNode) wordGraph.get(w);
+		if (n == null)
+		    wordGraph.add(words[i], new WordNode(words[i], i));
+		else
+		    n.addIndex(i);
+	    }
 	}
 
 	calculateRanks(wordGraph);
 
 	return wordGraph.getRankedNodes().limit(numKeywords)
-		.map(n -> n.getContent()).toArray(String[]::new);
+		.map(n -> n.getContent().toString()).toArray(String[]::new);
     }
 
-    private class WordNode extends TextRankNode<String> {
+    private class WordNode extends TextRankNode<Word> {
 	private static final int COOCCURRENCE_THRESHOLD = 10;
 
 	private final Set<Integer> positions;
 
-	public WordNode(String s, int pos) {
+	public WordNode(Word s, int pos) {
 	    super(wordGraph, s);
 
 	    positions = new HashSet<>();
@@ -52,7 +55,7 @@ public class TextRankKeywords extends TextRank implements KeywordExtractor {
 	}
 
 	@Override
-	public double calculateRelationScore(Graph<String>.Node other) {
+	public double calculateRelationScore(Graph<Word>.Node other) {
 	    Set<Integer> thisPositions = positions;
 	    Set<Integer> otherPositions = ((WordNode) other).positions;
 

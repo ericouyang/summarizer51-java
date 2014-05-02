@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import types.Sentence;
+import types.Word;
 
 public class Parser {
     private final static String SENTENCE_BOUNDARY = "(?<=(?<!\\..)[\\?\\!\\.]+)\\s(?!.\\.)|[\r\n]+";
@@ -14,6 +15,9 @@ public class Parser {
 
     private final String fullText;
     private final boolean debugMode;
+    private Sentence[] sentences = null;
+    private String[] words = null;
+    private Word[] taggedWords = null;
 
     public Parser(String filename, boolean debug) throws IOException {
 	debugMode = debug;
@@ -34,6 +38,8 @@ public class Parser {
 		System.out.println(fullText);
 		System.out.println();
 	    }
+
+	    r.close();
 	}
     }
 
@@ -41,12 +47,22 @@ public class Parser {
 	this(filename, false);
     }
 
-    public Sentence[] parseSentences() {
-	return Parser.parseSentences(fullText);
+    public Sentence[] getParsedSentences() {
+	if (sentences == null)
+	    sentences = Parser.parseSentences(fullText);
+	return sentences;
     }
 
-    public String[] parseWords() {
-	return Parser.parseWords(fullText);
+    public String[] getParsedWords() {
+	if (words == null)
+	    words = Parser.parseWords(fullText);
+	return words;
+    }
+
+    public Word[] getTaggedWords() {
+	if (taggedWords == null)
+	    taggedWords = Parser.tagWords(getParsedWords());
+	return taggedWords;
     }
 
     public static Sentence[] parseSentences(String s) {
@@ -72,5 +88,10 @@ public class Parser {
 	}
 
 	return words.toArray(new String[words.size()]);
+    }
+
+    public static Word[] tagWords(String[] words) {
+	Tagger t = new Tagger();
+	return t.tag(words);
     }
 }
