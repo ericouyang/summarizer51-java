@@ -23,7 +23,7 @@ public class Summarizer51 {
     private static final boolean DEBUG = true;
 
     public static void main(String[] args) throws IOException {
-	String filename = "texts/gilbert.txt";
+	String filename = "texts/inspec_abstract.txt";
 
 	/*
 	 * if (args.length == 0) { Scanner s = new Scanner(System.in);
