@@ -1,2 +1,2 @@
 title: Summarizer51
-seas-usernames: eouyang, fwidjaja
+seas-usernames: eric, fwidjaja
