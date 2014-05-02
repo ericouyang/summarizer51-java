@@ -1,5 +1,8 @@
 package algorithms.textrank;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import types.Graph;
 
 public abstract class TextRank {
@@ -59,6 +62,48 @@ public abstract class TextRank {
 	    this.rank = rank;
 
 	    return converged;
+	}
+    }
+
+    public class PositionNode<T> extends TextRankNode<T> {
+	private static final int COOCCURRENCE_THRESHOLD = 2;
+
+	private final Set<Integer> positions;
+
+	public PositionNode(Graph<T> graph, T c, int pos) {
+	    super(graph, c);
+
+	    positions = new HashSet<>();
+	    positions.add(pos);
+	}
+
+	public boolean addIndex(int i) {
+	    return positions.add(i);
+	}
+
+	public int adjacency(PositionNode<T> other) {
+	    return withinThreshold(other, 1);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public double calculateRelationScore(Graph<T>.Node other) {
+	    return (withinThreshold((PositionNode<T>) other,
+		    COOCCURRENCE_THRESHOLD) != 0) ? 1 : 0;
+	}
+
+	private int withinThreshold(PositionNode<T> other, int threshold) {
+	    Set<Integer> thisPositions = positions;
+	    Set<Integer> otherPositions = other.positions;
+
+	    for (int i : thisPositions) {
+		for (int j : otherPositions) {
+		    if (Math.abs(i - j) <= threshold)
+			return i - j;
+		}
+	    }
+
+	    return 0;
 	}
     }
 }

@@ -80,6 +80,11 @@ public class Graph<T> {
 	return nodes.values().stream();
     }
 
+    public double getThreshold(int pos) {
+	return getRankedNodes().limit(pos).toArray(Graph.Node[]::new)[pos >= nodes
+		.size() ? nodes.size() - 1 : pos - 1].getRank();
+    }
+
     /**
      * Performs an action on each node in the graph
      * 
@@ -184,6 +189,5 @@ public class Graph<T> {
 	public abstract boolean calculateRank();
 
 	public abstract double calculateRelationScore(Node n);
-
     }
 }
