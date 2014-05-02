@@ -5,8 +5,9 @@ import java.util.Scanner;
 import types.Sentence;
 import types.Word;
 import util.Parser;
-import algorithms.TextRankKeywords;
-import algorithms.TextRankSummary;
+import algorithms.lexrank.LexRank;
+import algorithms.textrank.TextRankKeywords;
+import algorithms.textrank.TextRankSummary;
 
 /**
  * Summarizer51
