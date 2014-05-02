@@ -1,8 +1,8 @@
 package util;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,91 +19,98 @@ public class Tagger {
     private final Map<String, List<String>> dict;
 
     public Tagger() {
-	dict = new HashMap<>(LEXICON_SIZE);
+        dict = new HashMap<>(LEXICON_SIZE);
 
-	try (BufferedReader r = new BufferedReader(new FileReader(
-		"../resources/lexicon.txt"))) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(getClass()
+                .getResourceAsStream("resources/lexicon.txt")))) {
 
-	    String line = r.readLine();
-	    while (line != null) {
-		List<String> lineTokens = Arrays.asList(line.split(" "));
+            String line = r.readLine();
+            while (line != null) {
+                List<String> lineTokens = Arrays.asList(line.split(" "));
 
-		String word = lineTokens.get(0);
-		List<String> tags = lineTokens.subList(1, lineTokens.size());
+                String word = lineTokens.get(0);
+                List<String> tags = lineTokens.subList(1, lineTokens.size());
 
-		if (word != null && !lineTokens.isEmpty())
-		    dict.put(word, tags);
+                if (word != null && !lineTokens.isEmpty()) {
+                    dict.put(word, tags);
+                }
 
-		line = r.readLine();
-	    }
+                line = r.readLine();
+            }
 
-	    r.close();
-	} catch (IOException e) {
-	    System.err.println("Unable to initilize tagger.");
-	    System.exit(10);
-	}
+            r.close();
+        } catch (IOException e) {
+            System.err.println("Unable to initilize tagger.");
+            System.exit(10);
+        }
     }
 
     public Word[] tag(String[] words) {
-	List<Word> taggedWords = new ArrayList<Word>(words.length);
+        List<Word> taggedWords = new ArrayList<Word>(words.length);
 
-	for (int i = 0; i < words.length; i++) {
-	    String word = words[i];
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
 
-	    String tag;
-	    if (dict.containsKey(word))
-		tag = dict.get(word).get(0);
-	    else
-		tag = "NN";
+            String tag;
+            if (dict.containsKey(word)) {
+                tag = dict.get(word).get(0);
+            } else {
+                tag = "NN";
+            }
 
-	    // verbs after "the" -> nouns
-	    if (i > 0 && taggedWords.get(i - 1).getTag().equals("DT")
-		    && tag.matches("VBD|VBP|VB"))
-		tag = "NN";
+            // verbs after "the" -> nouns
+            if (i > 0 && taggedWords.get(i - 1).getTag().equals("DT") && tag.matches("VBD|VBP|VB")) {
+                tag = "NN";
+            }
 
-	    // if "." && noun -> number
-	    if (tag.charAt(0) == 'N' && word.contains("."))
-		tag = "CD";
+            // if "." && noun -> number
+            if (tag.charAt(0) == 'N' && word.contains(".")) {
+                tag = "CD";
+            }
 
-	    // if ends with "ed" && noun -> past particle
-	    if (tag.charAt(0) == 'N' && word.length() > 2
-		    && word.substring(word.length() - 2).equals("ed"))
-		tag = "VBN";
+            // if ends with "ed" && noun -> past particle
+            if (tag.charAt(0) == 'N' && word.length() > 2
+                    && word.substring(word.length() - 2).equals("ed")) {
+                tag = "VBN";
+            }
 
-	    // ends with "ly" -> adverb
-	    if (word.length() > 2
-		    && word.substring(word.length() - 2).equals("ly"))
-		tag = "RB";
+            // ends with "ly" -> adverb
+            if (word.length() > 2 && word.substring(word.length() - 2).equals("ly")) {
+                tag = "RB";
+            }
 
-	    if (tag.charAt(0) == 'N' && word.length() > 2
-		    && word.substring(word.length() - 2).equals("al"))
-		tag = "JJ";
+            if (tag.charAt(0) == 'N' && word.length() > 2
+                    && word.substring(word.length() - 2).equals("al")) {
+                tag = "JJ";
+            }
 
-	    if (i > 0 && tag.equals("NN")
-		    && taggedWords.get(i - 1).getWord().equals("would"))
-		tag = "VB";
+            if (i > 0 && tag.equals("NN") && taggedWords.get(i - 1).getWord().equals("would")) {
+                tag = "VB";
+            }
 
-	    if (tag.equals("NN") && word.charAt(word.length() - 1) == 's')
-		tag = "NNS";
+            if (tag.equals("NN") && word.charAt(word.length() - 1) == 's') {
+                tag = "NNS";
+            }
 
-	    if (tag.charAt(0) == 'N' && word.length() > 3
-		    && word.substring(word.length() - 3).equals("ing"))
-		tag = "VBG";
+            if (tag.charAt(0) == 'N' && word.length() > 3
+                    && word.substring(word.length() - 3).equals("ing")) {
+                tag = "VBG";
+            }
 
-	    if (i > 0 && taggedWords.get(i - 1).getTag().charAt(0) == 'N'
-		    && tag.charAt(0) == 'N') {
-		List<String> tagOptions = dict.get(word);
-		if (tagOptions != null) {
-		    if (tagOptions.contains("VBN"))
-			tag = "VBN";
-		    else if (tagOptions.contains("VBZ"))
-			tag = "VBZ";
-		}
-	    }
+            if (i > 0 && taggedWords.get(i - 1).getTag().charAt(0) == 'N' && tag.charAt(0) == 'N') {
+                List<String> tagOptions = dict.get(word);
+                if (tagOptions != null) {
+                    if (tagOptions.contains("VBN")) {
+                        tag = "VBN";
+                    } else if (tagOptions.contains("VBZ")) {
+                        tag = "VBZ";
+                    }
+                }
+            }
 
-	    taggedWords.add(new Word(word, tag));
-	}
+            taggedWords.add(new Word(word, tag));
+        }
 
-	return taggedWords.toArray(new Word[taggedWords.size()]);
+        return taggedWords.toArray(new Word[taggedWords.size()]);
     }
 }
