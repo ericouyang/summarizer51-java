@@ -18,6 +18,9 @@ public class Tagger {
 
     private final Map<String, List<String>> dict;
 
+    /**
+     * Constructs a new Tagger by loading in the lexicon data
+     */
     public Tagger() {
 	dict = new HashMap<>(LEXICON_SIZE);
 
@@ -44,6 +47,11 @@ public class Tagger {
 	}
     }
 
+    /**
+     * @param words
+     *            Array of Strings to convert to Words
+     * @return array of words to Words (tagged with part of speech)
+     */
     public Word[] tag(String[] words) {
 	List<Word> taggedWords = new ArrayList<Word>(words.length);
 

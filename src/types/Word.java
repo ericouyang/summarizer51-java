@@ -9,10 +9,16 @@ public class Word {
 	tag = t;
     }
 
+    /**
+     * @return the word represented by this Word
+     */
     public String getWord() {
 	return word;
     }
 
+    /**
+     * @return the part of speech tag for this Word
+     */
     public String getTag() {
 	return tag;
     }

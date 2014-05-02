@@ -8,6 +8,12 @@ public abstract class TextRank {
     protected static final double DAMPING_FACTOR = 0.85;
     protected static final double ERROR_THRESHOLD = 0.0001;
 
+    /**
+     * Performs the ranking calculations in place for the given graph
+     * 
+     * @param graph
+     *            the graph for ranking calculations
+     */
     protected <T> void calculateRanks(Graph<T> graph) {
 	graph.forEach((k1, v1) -> graph.forEach((k2, v2) -> {
 	    if (v1 != v2 && !v1.getNeighbors().contains(v2)) {
@@ -29,6 +35,11 @@ public abstract class TextRank {
 	    g.super(c);
 	}
 
+	/**
+	 * Iteratively calculates the ranking of this node
+	 * 
+	 * @return true if the ranking has converged
+	 */
 	public boolean calculateRank() {
 	    double rank = neighbors.stream().reduce(
 		    0.0,
