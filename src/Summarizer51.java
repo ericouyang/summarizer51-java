@@ -1,6 +1,11 @@
 import java.io.IOException;
 import java.util.Arrays;
 
+import types.Sentence;
+import util.Parser;
+import algorithms.TextRankKeywords;
+import algorithms.TextRankSummary;
+
 /**
  * Summarizer51
  *
@@ -15,36 +20,41 @@ import java.util.Arrays;
  *
  */
 public class Summarizer51 {
-    public static final boolean DEBUG = true;
+    private static final boolean DEBUG = true;
 
     public static void main(String[] args) throws IOException {
-        String filename = "texts/gilbert.txt";
+	String filename = "texts/gilbert.txt";
 
-        /*
-         * if (args.length == 0) { Scanner s = new Scanner(System.in);
-         * System.out.print("Please enter a filename: "); filename = s.nextLine(); } else { filename
-         * = args[0]; }
-         */
+	/*
+	 * if (args.length == 0) { Scanner s = new Scanner(System.in);
+	 * System.out.print("Please enter a filename: "); filename =
+	 * s.nextLine(); } else { filename = args[0]; }
+	 */
 
-        Parser p = new Parser(filename);
+	Parser p = new Parser(filename);
 
-        if (DEBUG) {
-            System.out.println("***SENTENCES***");
-            for (Sentence s : p.parseSentences()) {
-                System.out.println(s.getOriginal());
-                System.out.println(s.getWords());
-                System.out.println();
-            }
+	if (DEBUG) {
+	    System.out.println("***SENTENCES***");
+	    for (Sentence s : p.parseSentences()) {
+		System.out.println(s.getOriginal());
+		System.out.println(s.getWords());
+		System.out.println();
+	    }
 
-            System.out.println("***WORDS***");
-            System.out.println(Arrays.toString(p.parseWords()));
-            System.out.println();
-        }
+	    System.out.println("***WORDS***");
+	    System.out.println(Arrays.toString(p.parseWords()));
+	    System.out.println();
+	}
 
-        System.out.println("***SUMMARY***");
-        for (Sentence s : TextRank.initSummaryExtractor().getSummary(p.parseSentences())) {
-            System.out.println(s);
-        }
+	System.out.println("***KEYWORDS***");
+	for (String s : new TextRankKeywords(p.parseWords()).getKeywords()) {
+	    System.out.println(s);
+	}
+
+	System.out.println("\n***SUMMARY***");
+	for (Sentence s : new TextRankSummary(p.parseSentences()).getSummary()) {
+	    System.out.println(s);
+	}
 
     }
 }

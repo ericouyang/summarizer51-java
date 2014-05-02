@@ -3,6 +3,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import types.Graph;
+import types.Sentence;
+import algorithms.SummaryExtractor;
+
 public class LexRank implements SummaryExtractor {
 
     private static final int MAX_ITERATIONS = 30;
@@ -10,13 +14,19 @@ public class LexRank implements SummaryExtractor {
     private static final double ERROR_THRESHOLD = 0.0001;
     private static final int SUMMARY_LENGTH = 5;
 
-    Map<Sentence, Map<String, Integer>> tfs = new HashMap<>();
+    private final Sentence[] sentences;
+
+    private final Graph<Sentence> graph = new Graph<>();
+    private final Map<Sentence, Map<String, Integer>> tfs = new HashMap<>();
+
+    public LexRank(Sentence[] sentences) {
+        this.sentences = sentences;
+    }
 
     @Override
-    public Sentence[] getSummary(Sentence[] sentences) {
+    public Sentence[] getSummary() {
         init(sentences);
 
-        Graph<Sentence> graph = new Graph<>();
         for (Sentence sentence : sentences) {
             graph.add(sentence, new SentenceNode(sentence));
         }
@@ -45,10 +55,10 @@ public class LexRank implements SummaryExtractor {
         }
     }
 
-    private class SentenceNode extends Node<Sentence> {
+    private class SentenceNode extends Graph<Sentence>.Node {
 
         public SentenceNode(Sentence s) {
-            super(s);
+            graph.super(s);
         }
 
         @Override
@@ -56,10 +66,11 @@ public class LexRank implements SummaryExtractor {
             double rank = neighbors.stream().reduce(
                     0.0,
                     (aj, j) -> aj
-                    + j.getWeight()
-                    * j.getTarget().rank
-                    / j.getTarget().neighbors.stream().reduce(0.0,
-                            (ak, k) -> ak + k.getWeight(), Double::sum), Double::sum);
+                            + j.getWeight()
+                            * j.getTarget().getRank()
+                            / j.getTarget().getNeighbors().stream()
+                                    .reduce(0.0, (ak, k) -> ak + k.getWeight(), Double::sum),
+                    Double::sum);
             rank *= DAMPING_FACTOR;
             rank += 1 - DAMPING_FACTOR;
 
@@ -71,7 +82,7 @@ public class LexRank implements SummaryExtractor {
         }
 
         @Override
-        public double calculateRelationScore(Node<Sentence> other) {
+        public double calculateRelationScore(Graph<Sentence>.Node other) {
             Map<String, Integer> xtf = tfs.get(getContent());
             Map<String, Integer> ytf = tfs.get(other.getContent());
 
